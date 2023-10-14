@@ -2,6 +2,7 @@
 #define MATRIX_CHAIN
 
 #include <vector>
+#include <iterator>
 
 #include "matrix.hpp"
 
@@ -21,7 +22,23 @@ public:
     using const_iterator         = typename std::vector<matrix_type>::const_iterator;
     using reverse_iterator       = typename std::vector<matrix_type>::reverse_iterator;
     using const_reverse_iterator = typename std::vector<matrix_type>::const_reverse_iterator;
+private:
+    
+public:
+    MatrixChain() = default;
 
+    MatrixChain(size_type size) {
+        chain_.reserve(size);
+    }
+
+    template<std::forward_iterator ForwIter>
+    MatrixChain(ForwIter begin, ForwIter end)
+    : MatrixChain(std::distance(begin, end)) {
+        chain_.insert(chain_.begin(), begin(), end());
+    }
+
+    MatrixChain(std::initializer_list<matrix_type> ls)
+    : MatrixChain(ls.begin(), ls.end()) {}
 
 private:
     std::vector<matrix_type> chain_;
