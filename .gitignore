@@ -1,0 +1,3 @@
+**/build
+**/tests/end2end/resources
+.vscode/
