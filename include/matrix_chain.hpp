@@ -25,21 +25,26 @@ public:
 private:
     
 public:
-    MatrixChain() = default;
+    constexpr MatrixChain() = default;
 
-    MatrixChain(size_type size) {
+    constexpr explicit MatrixChain(size_type size) {
         chain_.reserve(size);
     }
 
     template<std::forward_iterator ForwIter>
-    MatrixChain(ForwIter begin, ForwIter end)
+    constexpr MatrixChain(ForwIter begin, ForwIter end)
     : MatrixChain(std::distance(begin, end)) {
         chain_.insert(chain_.begin(), begin(), end());
     }
 
-    MatrixChain(std::initializer_list<matrix_type> ls)
+    constexpr MatrixChain(std::initializer_list<matrix_type> ls)
     : MatrixChain(ls.begin(), ls.end()) {}
-
+    
+    template<typename matrix_type>
+    constexpr void add(matrix_type&& matrix) {
+        chain_.push_back(std::forward<matrix_type>(matrix));
+    }
+    
 private:
     std::vector<matrix_type> chain_;
 };
