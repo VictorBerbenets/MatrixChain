@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iterator>
+#include <utility>
 
 #include "matrix.hpp"
 
@@ -41,7 +42,11 @@ public:
     : MatrixChain(ls.begin(), ls.end()) {}
     
     constexpr void add(const matrix_type& matrix) {
-        chain_.push_back(std::forward<matrix_type>(matrix));
+        chain_.push_back(matrix_type(matrix));
+    }
+
+    constexpr void add(matrix_type&& matrix) {
+        chain_.push_back(std::move(matrix));
     }
     
 private:
