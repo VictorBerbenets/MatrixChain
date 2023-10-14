@@ -40,8 +40,7 @@ public:
     constexpr MatrixChain(std::initializer_list<matrix_type> ls)
     : MatrixChain(ls.begin(), ls.end()) {}
     
-    template<typename matrix_type>
-    constexpr void add(matrix_type&& matrix) {
+    constexpr void add(const matrix_type& matrix) {
         chain_.push_back(std::forward<matrix_type>(matrix));
     }
     
