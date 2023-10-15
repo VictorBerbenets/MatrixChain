@@ -43,7 +43,7 @@ public:
     constexpr MatrixChain(std::initializer_list<matrix_type> ls)
     : MatrixChain(ls.begin(), ls.end()) {}
     
-    constexpr check_pair push_back(const matrix_type& matrix) {
+    check_pair push_back(const matrix_type& matrix) {
         if (insertion_check(matrix, InsertPos::Back)) {
             chain_.push_back(matrix);
             return {chain_.begin(), true};
@@ -51,7 +51,7 @@ public:
         return {chain_.begin(), false};
     }
 
-    constexpr check_pair push_back(matrix_type&& matrix) {
+    check_pair push_back(matrix_type&& matrix) {
         if (insertion_check(matrix, InsertPos::Back)) {
             chain_.push_back(std::move(matrix));
             return {chain_.begin(), true};
@@ -59,7 +59,7 @@ public:
         return {chain_.begin(), false};
     }
 
-    constexpr check_pair push_front(const matrix_type& matrix) {
+    check_pair push_front(const matrix_type& matrix) {
         if (insertion_check(matrix, InsertPos::Front)) {
             chain_.push_front(matrix);
             return {chain_.begin(), true};
@@ -67,7 +67,7 @@ public:
         return {chain_.begin(), false};
     }
 
-    constexpr check_pair push_front(matrix_type&& matrix) {
+    check_pair push_front(matrix_type&& matrix) {
         if (insertion_check(matrix, InsertPos::Front)) {
             chain_.push_front(std::move(matrix));
             return {chain_.begin(), true};
