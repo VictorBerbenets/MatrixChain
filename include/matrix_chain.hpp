@@ -133,12 +133,12 @@ public:
 
     iterator begin() noexcept { return chain_.begin(); };
     iterator end() noexcept { return chain_.end(); };
-    const_iterator cbegin() noexcept { return chain_.cbegin(); };
-    const_iterator cend() noexcept { return chain_.cend(); };
+    const_iterator cbegin() const noexcept { return chain_.cbegin(); };
+    const_iterator cend() const noexcept { return chain_.cend(); };
     reverse_iterator rbegin() noexcept { return chain_.rbegin(); };
     reverse_iterator rend() noexcept { return chain_.rend(); };
-    const_reverse_iterator crbegin() noexcept { return chain_.crbegin(); };
-    const_reverse_iterator crend() noexcept { return chain_.crend(); };
+    const_reverse_iterator crbegin() const noexcept { return chain_.crbegin(); };
+    const_reverse_iterator crend() const noexcept { return chain_.crend(); };
 private:
     bool insertion_check(const matrix_type& matrix, InsertPos pos) const {
         if (!size()) { return true; }
