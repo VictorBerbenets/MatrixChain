@@ -5,6 +5,7 @@
 #include <iterator>
 #include <utility>
 #include <unordered_map>
+#include <climits>
 
 #include "matrix.hpp"
 
@@ -40,8 +41,9 @@ public:
     MatrixChain(ForwIter begin, ForwIter end)
     : MatrixChain(std::distance(begin, end)) {
         chain_.insert(chain_.begin(), begin(), end());
+        // saving matrix sizes in order
         if (chain_.size()) {
-            matrix_sizes_.insert(begin(), front().nline(), front().ncolumn());
+            matrix_sizes_.insert(begin(), {front().nline(), front().ncolumn()});
         }
         for (size_type index = 1; index < chain_.size(); ++index) {
             matrix_sizes_.push_back(chain_[index].ncolumn());
@@ -101,13 +103,29 @@ public:
     }
 
     std::vector<size_type> get_optimal_mul_order() const {
+        if (!size()) {
+            return {0};
+        }
+        auto range = matrix_sizes_.size() - 1;
+        Matrix<size_type> cost_table{range, range, 0};
+        Matrix<size_type> optimal_costs{range - 1, range, 0};
 
-        std::vector<size_type> sizes_matrices {};
-        sizes_matrices.reserve(chain_.size());
-        for (size_type id {0}; auto val : chain_) {
-           // sizes_matrices[id] = val.
+        for (size_type l = 2; l < range; ++l) {
+            for (size_type i = 1; i < range - l + 1; ++i) {
+                auto j = i + l - 1;
+                cost_table[i][j] = LONG_MAX;
+                for (auto k = i; k < j - 1; ++k) {
+                    auto q = cost_table[i][k] + cost_table[k + 1][j] +
+                             matrix_sizes_[i-1] * matrix_sizes_[k] * matrix_sizes_[j];
+                    if (q < cost_table[i][j]) {
+                        cost_table[i][j]    = q;
+                        optimal_costs[i][j] = k;
+                    }
+                }
+            }
         }
 
+        return {};
     }
 
     size_type size() const noexcept { return chain_.size(); };
@@ -119,7 +137,7 @@ public:
     const_iterator cend() noexcept { return chain_.cend(); };
     reverse_iterator rbegin() noexcept { return chain_.rbegin(); };
     reverse_iterator rend() noexcept { return chain_.rend(); };
-    const_reverse_iterator crbegin() noexcept { return chain_.rbegin(); };
+    const_reverse_iterator crbegin() noexcept { return chain_.crbegin(); };
     const_reverse_iterator crend() noexcept { return chain_.crend(); };
 private:
     bool insertion_check(const matrix_type& matrix, InsertPos pos) const {
