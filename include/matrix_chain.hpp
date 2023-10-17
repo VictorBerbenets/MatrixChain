@@ -4,8 +4,6 @@
 #include <deque>
 #include <iterator>
 #include <utility>
-#include <unordered_map>
-#include <climits>
 
 #include "matrix.hpp"
 
@@ -44,10 +42,11 @@ public:
         // saving matrix sizes in order
         if (chain_.size()) {
             matrix_sizes_.insert(begin(), {front().nline(), front().ncolumn()});
+            for (size_type index = 1; index < chain_.size(); ++index) {
+                matrix_sizes_.push_back(chain_[index].ncolumn());
+            }
         }
-        for (size_type index = 1; index < chain_.size(); ++index) {
-            matrix_sizes_.push_back(chain_[index].ncolumn());
-        }
+
     }
 
     MatrixChain(std::initializer_list<matrix_type> ls)
@@ -61,10 +60,10 @@ public:
         return chain_[id];
     }
 
-    reference front() { return chain_.front(); };
-    reference back()  { return chain_.back(); };
-    const_reference front() const { return chain_.front(); };
-    const_reference back()  const { return chain_.back(); };
+    reference front() { return chain_.front(); }
+    reference back()  { return chain_.back(); }
+    const_reference front() const { return chain_.front(); }
+    const_reference back()  const { return chain_.back(); }
 
     check_pair push_back(const matrix_type& matrix) {
         if (insertion_check(matrix, InsertPos::Back)) {
@@ -103,17 +102,17 @@ public:
     }
 
     std::vector<size_type> get_optimal_mul_order() const {
-        if (!size()) {
+        if (empty()) {
             return {0};
         }
         auto range = matrix_sizes_.size() - 1;
         Matrix<size_type> cost_table{range, range, 0};
-        Matrix<size_type> optimal_costs{range - 1, range, 0};
+        Matrix<size_type> optimal_costs{range, range, 0};
 
         for (size_type l = 2; l < range; ++l) {
             for (size_type i = 1; i < range - l + 1; ++i) {
                 auto j = i + l - 1;
-                cost_table[i][j] = LONG_MAX;
+                cost_table[i][j] = cost_table[0][0];
                 for (auto k = i; k < j - 1; ++k) {
                     auto q = cost_table[i][k] + cost_table[k + 1][j] +
                              matrix_sizes_[i-1] * matrix_sizes_[k] * matrix_sizes_[j];
@@ -124,33 +123,31 @@ public:
                 }
             }
         }
-
         return {};
     }
 
-    size_type size() const noexcept { return chain_.size(); };
-    bool empty() const noexcept { return chain_.empty(); };
+    size_type size() const noexcept { return chain_.size(); }
+    bool empty() const noexcept { return chain_.empty(); }
 
-    iterator begin() noexcept { return chain_.begin(); };
-    iterator end() noexcept { return chain_.end(); };
-    const_iterator cbegin() const noexcept { return chain_.cbegin(); };
-    const_iterator cend() const noexcept { return chain_.cend(); };
-    reverse_iterator rbegin() noexcept { return chain_.rbegin(); };
-    reverse_iterator rend() noexcept { return chain_.rend(); };
-    const_reverse_iterator crbegin() const noexcept { return chain_.crbegin(); };
-    const_reverse_iterator crend() const noexcept { return chain_.crend(); };
+    iterator begin() noexcept { return chain_.begin(); }
+    iterator end()   noexcept { return chain_.end(); }
+    const_iterator cbegin() const noexcept { return chain_.cbegin(); }
+    const_iterator cend()   const noexcept { return chain_.cend(); }
+    reverse_iterator rbegin() noexcept { return chain_.rbegin(); }
+    reverse_iterator rend()   noexcept { return chain_.rend(); }
+    const_reverse_iterator crbegin() const noexcept { return chain_.crbegin(); }
+    const_reverse_iterator crend()   const noexcept { return chain_.crend(); }
 private:
     bool insertion_check(const matrix_type& matrix, InsertPos pos) const {
-        if (!size()) { return true; }
+        if (empty()) { return true; }
 
         switch(pos) {
             case InsertPos::Front:
                 return chain_.front().nline() == matrix.ncolumn();
             case InsertPos::Back:
                 return chain_.back().ncolumn() == matrix.nline();
-            default: break;
+            default: return false;
         }
-        return false; // we won't get here
     }
 
 private:
@@ -158,7 +155,7 @@ private:
     std::deque<size_type> matrix_sizes_;
 };
 
-}; // <--- namespace yLAB
+} // <--- namespace yLAB
 
 #endif
 
