@@ -41,7 +41,8 @@ public:
         chain_.insert(chain_.begin(), begin(), end());
         // saving matrix sizes in order
         if (chain_.size()) {
-            matrix_sizes_.insert(begin(), {front().nline(), front().ncolumn()});
+            matrix_sizes_.push_back(front().nline());
+            matrix_sizes_.push_back(front().ncolumn());
             for (size_type index = 1; index < chain_.size(); ++index) {
                 matrix_sizes_.push_back(chain_[index].ncolumn());
             }
@@ -67,7 +68,7 @@ public:
 
     check_pair push_back(const matrix_type& matrix) {
         if (insertion_check(matrix, InsertPos::Back)) {
-            matrix_sizes_.push_back(matrix.ncolumn());
+            push_size(matrix, InsertPos::Back);
             chain_.push_back(matrix);
             return {chain_.begin(), true};
         }
@@ -76,7 +77,7 @@ public:
 
     check_pair push_back(matrix_type&& matrix) {
         if (insertion_check(matrix, InsertPos::Back)) {
-            matrix_sizes_.push_back(matrix.ncolumn());
+            push_size(matrix, InsertPos::Back);
             chain_.push_back(std::move(matrix));
             return {chain_.begin(), true};
         }
@@ -85,7 +86,7 @@ public:
 
     check_pair push_front(const matrix_type& matrix) {
         if (insertion_check(matrix, InsertPos::Front)) {
-            matrix_sizes_.push_front(matrix.nline());
+            push_size(matrix, InsertPos::Front);
             chain_.push_front(matrix);
             return {chain_.begin(), true};
         }
@@ -94,7 +95,7 @@ public:
 
     check_pair push_front(matrix_type&& matrix) {
         if (insertion_check(matrix, InsertPos::Front)) {
-            matrix_sizes_.push_front(matrix.nline());
+            push_size(matrix, InsertPos::Front);
             chain_.push_front(std::move(matrix));
             return {chain_.begin(), true};
         }
@@ -123,6 +124,16 @@ public:
                 }
             }
         }
+#if 0
+        std::cout << "deque\n";
+        for (auto val : matrix_sizes_) {
+            std::cout << val << ' ';
+        }
+        std::cout << std::endl;
+
+        std::cout << cost_table << std::endl;
+        std::cout << optimal_costs << std::endl;
+#endif
         return {};
     }
 
@@ -150,6 +161,18 @@ private:
         }
     }
 
+    void push_size(const matrix_type& matrix, InsertPos pos) {
+        if (empty()) {
+            matrix_sizes_.push_back(matrix.nline());
+            matrix_sizes_.push_back(matrix.ncolumn());
+        } else {
+            if (pos == InsertPos::Front) {
+                matrix_sizes_.push_front(matrix.nline());
+            } else {
+                matrix_sizes_.push_back(matrix.ncolumn());
+            }
+        }
+    }
 private:
     std::deque<matrix_type> chain_;
     std::deque<size_type> matrix_sizes_;
