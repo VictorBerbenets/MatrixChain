@@ -38,7 +38,7 @@ public:
     template<std::forward_iterator ForwIter>
     MatrixChain(ForwIter begin, ForwIter end)
     : MatrixChain(std::distance(begin, end)) {
-        chain_.insert(chain_.begin(), begin(), end());
+        chain_.insert(chain_.begin(), begin, end);
         // saving matrix sizes in order
         if (chain_.size()) {
             matrix_sizes_.push_back(front().nline());
@@ -107,16 +107,17 @@ public:
             return {0};
         }
         auto range = matrix_sizes_.size() - 1;
-        Matrix<size_type> cost_table{range, range, 0};
-        Matrix<size_type> optimal_costs{range, range, 0};
+        Matrix<size_type> cost_table{range + 1, range + 1, 0};
+        Matrix<size_type> optimal_costs{range, range + 1, 0};
 
-        for (size_type l = 2; l < range; ++l) {
-            for (size_type i = 1; i < range - l + 1; ++i) {
+        for (size_type l = 2; l <= range; ++l) {
+            for (size_type i = 1; i <= range - l + 1; ++i) {
                 auto j = i + l - 1;
-                cost_table[i][j] = cost_table[0][0];
-                for (auto k = i; k < j - 1; ++k) {
+                cost_table[i][j] = __LONG_MAX__;
+                for (auto k = i; k <= j - 1; ++k) {
                     auto q = cost_table[i][k] + cost_table[k + 1][j] +
                              matrix_sizes_[i-1] * matrix_sizes_[k] * matrix_sizes_[j];
+                    std::cout << "q = " << q << std::endl;
                     if (q < cost_table[i][j]) {
                         cost_table[i][j]    = q;
                         optimal_costs[i][j] = k;
@@ -133,8 +134,22 @@ public:
 
         std::cout << cost_table << std::endl;
         std::cout << optimal_costs << std::endl;
+
 #endif
+        optimal_order(optimal_costs, 1, 6);
         return {};
+    }
+
+    void optimal_order(Matrix<size_type>& m, size_type i, size_type j) const {
+        if (i == j) {
+           std::cout << i << std::endl;
+           // std::cout << "A" << i;
+        } else {
+            //std::cout << "(";
+            optimal_order(m, i, m[i][j]);
+            optimal_order(m, m[i][j] + 1, j);
+            //std::cout << ")";
+        }
     }
 
     size_type size() const noexcept { return chain_.size(); }
