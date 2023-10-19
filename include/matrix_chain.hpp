@@ -4,6 +4,7 @@
 #include <deque>
 #include <iterator>
 #include <utility>
+#include <stack>
 
 #include "matrix.hpp"
 
@@ -70,27 +71,27 @@ public:
         if (insertion_check(matrix, InsertPos::Back)) {
             push_size(matrix, InsertPos::Back);
             chain_.push_back(matrix);
-            return {chain_.begin(), true};
+            return {std::prev(end()), true};
         }
-        return {chain_.begin(), false};
+        return {std::prev(end()), false};
     }
 
     check_pair push_back(matrix_type&& matrix) {
         if (insertion_check(matrix, InsertPos::Back)) {
             push_size(matrix, InsertPos::Back);
             chain_.push_back(std::move(matrix));
-            return {chain_.begin(), true};
+            return {std::prev(end()), true};
         }
-        return {chain_.begin(), false};
+        return {std::prev(end()), false};
     }
 
     check_pair push_front(const matrix_type& matrix) {
         if (insertion_check(matrix, InsertPos::Front)) {
             push_size(matrix, InsertPos::Front);
             chain_.push_front(matrix);
-            return {chain_.begin(), true};
+            return {begin(), true};
         }
-        return {chain_.begin(), false};
+        return {begin(), false};
     }
 
     check_pair push_front(matrix_type&& matrix) {
@@ -125,7 +126,6 @@ public:
                 }
             }
         }
-#if 0
         std::cout << "deque\n";
         for (auto val : matrix_sizes_) {
             std::cout << val << ' ';
@@ -135,21 +135,41 @@ public:
         std::cout << cost_table << std::endl;
         std::cout << optimal_costs << std::endl;
 
-#endif
-        optimal_order(optimal_costs, 1, 6);
+        std::vector<size_type> vec {};
+        optimal_order(vec, optimal_costs, 1, 6);
+        /*std::cout << "VECTOR\n";
+        for (auto val : vec) {
+            std::cout << val << std::endl;
+        }*/
         return {};
     }
 
-    void optimal_order(Matrix<size_type>& m, size_type i, size_type j) const {
+    void optimal_order(std::vector<size_type>& vec, Matrix<size_type>& m, size_type i, size_type j) const {
         if (i == j) {
-           std::cout << i << std::endl;
-           // std::cout << "A" << i;
+           //std::cout << i << std::endl;
+           //std::cout << "A" << i;
         } else {
             //std::cout << "(";
-            optimal_order(m, i, m[i][j]);
-            optimal_order(m, m[i][j] + 1, j);
-            //std::cout << ")";
+            optimal_order(vec, m, i, m[i][j]);
+            //vec.push_back(i - 1);
+            optimal_order(vec, m, m[i][j] + 1, j);
+            //std::cout << i - 1;
+            std::cout << "i = " << i << std::endl;
+            std::cout << "j = " << j << std::endl;
+
+           // vec.push_back(j - 2);
+            //vec.push_back(j);
+           // std::cout << ")";
         }
+#if 0
+        std::stack<size_type> ides {};
+
+        for (size_type id = 0; id < m.size(); ++id) {
+            if (i == j) {
+
+            }
+        }
+#endif
     }
 
     size_type size() const noexcept { return chain_.size(); }
@@ -188,6 +208,7 @@ private:
             }
         }
     }
+
 private:
     std::deque<matrix_type> chain_;
     std::deque<size_type> matrix_sizes_;
