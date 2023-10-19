@@ -2,6 +2,8 @@
 #define MATRIX_CHAIN
 
 #include <deque>
+#include <unordered_map>
+#include <algorithm>
 #include <iterator>
 #include <utility>
 #include <stack>
@@ -136,7 +138,8 @@ public:
         std::cout << optimal_costs << std::endl;
 
         std::vector<size_type> vec {};
-        optimal_order(vec, optimal_costs, 1, 6);
+        std::unordered_multimap<size_type, size_type> mmap {};
+        optimal_order(mmap, vec, optimal_costs, 1, 6);
         /*std::cout << "VECTOR\n";
         for (auto val : vec) {
             std::cout << val << std::endl;
@@ -144,32 +147,42 @@ public:
         return {};
     }
 
-    void optimal_order(std::vector<size_type>& vec, Matrix<size_type>& m, size_type i, size_type j) const {
+    void optimal_order(std::unordered_multimap<size_type, size_type>& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
         if (i == j) {
-           //std::cout << i << std::endl;
-           //std::cout << "A" << i;
+           // std::cout << i << std::endl;
+           // std::cout << "A" << i;
         } else {
             //std::cout << "(";
-            optimal_order(vec, m, i, m[i][j]);
+            optimal_order(mmap, data, m, i, m[i][j]);
             //vec.push_back(i - 1);
-            optimal_order(vec, m, m[i][j] + 1, j);
+            optimal_order(mmap, data, m, m[i][j] + 1, j);
             //std::cout << i - 1;
-            std::cout << "i = " << i << std::endl;
-            std::cout << "j = " << j << std::endl;
+            //std::cout << "i = " << i << std::endl;
+            //std::cout << "j = " << j << std::endl;
+            if (j - i == 1) {
+                data.push_back(i - 1);
+            } else {
+                auto lower_range = mmap.equal_range(i);
+                auto upper_range = mmap.equal_range(j);
 
-           // vec.push_back(j - 2);
-            //vec.push_back(j);
-           // std::cout << ")";
-        }
-#if 0
-        std::stack<size_type> ides {};
+                auto max_lower = std::max_element(lower_range.first, lower_range.second,
+                                             [](auto&& val1, auto&& val2) {
+                                                return val1 > val2;
+                                              });
 
-        for (size_type id = 0; id < m.size(); ++id) {
-            if (i == j) {
+                auto min_upper = std::min_element(lower_range.first, lower_range.second,
+                                [](auto&& val1, auto&& val2) {
+                                return val1 < val2;
+                                });
 
+                if (max_lower == lower_range.second) {
+
+                }
             }
         }
-#endif
+
+        mmap.emplace(i, j);
+        mmap.emplace(j, i);
     }
 
     size_type size() const noexcept { return chain_.size(); }
