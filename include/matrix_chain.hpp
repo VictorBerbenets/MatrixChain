@@ -119,7 +119,7 @@ public:
 
     std::vector<size_type> get_optimal_mul_order() const {
         if (empty()) {
-            return {0};
+            return {};
         }
         auto range = matrix_sizes_.size() - 1;
         Matrix<size_type> cost_table{range + 1, range + 1, 0};
@@ -139,23 +139,79 @@ public:
                 }
             }
         }
+#if 0
         std::cout << "matrix_sizes\n";
         for (auto val : matrix_sizes_) {
             std::cout << val << ' ';
         }
         std::cout << std::endl;
-
-        std::cout << cost_table << std::endl;
-        std::cout << optimal_costs << std::endl;
+#endif
+        //std::cout << cost_table << std::endl;
+        //std::cout << optimal_costs << std::endl;
 
         std::vector<size_type> vec {};
         std::unordered_multimap<size_type, size_type> mmap {};
         optimal_order(mmap, vec, optimal_costs, 1, size());
+        std::cout << std::endl;
         std::cout << "\nData\n";
         for (auto val : vec) {
             std::cout << val << std::endl;
         }
-        return {};
+        return vec;
+    }
+
+    matrix_type effective_multiply() const {
+        auto order = get_optimal_mul_order();
+        //auto& chain = *this;
+#if 0
+        std::cout << __LINE__ << std::endl;
+        std::cout << "size = " << order.size() << std::endl;
+        std::cout << "FRONT = " << order.front() << std::endl;
+#endif
+        std::unordered_map<size_type, matrix_type> m {};
+        //auto tmp = chain_[order.front()] * chain_[order.front() + 1];
+        //m.emplace(order.front(), tmp);
+        for (auto iter = order.begin(), end = order.end(); iter != end; ++iter) {
+            std::cout << "ITER = " << *iter << std::endl;
+            auto next_matrix_it = m.find(*iter + 1);
+            auto prev_matrix_it = m.find(*iter - 1);
+
+            auto next_matrix = next_matrix_it == m.end() ? chain_[*iter + 1] : next_matrix_it->second;
+
+            auto prev_matrix = prev_matrix_it == m.end() ? chain_[*iter] : prev_matrix_it->second;
+
+            if (*iter == 0) {
+                std::cout << "IN IF:\n";
+                prev_matrix_it = m.find(*iter);
+                prev_matrix = prev_matrix_it == m.end() ? chain_[*iter] : prev_matrix_it->second;
+            }
+
+            m.emplace(*iter, prev_matrix * next_matrix);
+
+        }
+        return m.find(order.back())->second;
+    #if 0
+        auto tmp = chain[order.front()] * chain[order.front() + 1];
+        m[order.front()]
+        for (auto id : order) {
+            if (m.find(id) == m.cend()) {
+
+            }
+            m[id] = chain[id] * chain[id + 1];
+        }
+    #endif
+    }
+
+    matrix_type multiply() const {
+        if (empty()) {
+            return matrix_type {0, 0, 0};
+        }
+
+        auto tmp = front();
+        for (auto it = std::next(cbegin()), end = cend(); it != end; ++it) {
+            tmp = tmp * (*it);
+        }
+        return tmp;
     }
 
     void optimal_order(std::unordered_multimap<size_type, size_type>& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
