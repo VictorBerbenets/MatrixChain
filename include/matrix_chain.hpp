@@ -100,9 +100,21 @@ public:
         if (insertion_check(matrix, InsertPos::Front)) {
             push_size(matrix, InsertPos::Front);
             chain_.push_front(std::move(matrix));
-            return {chain_.begin(), true};
+            return {begin(), true};
         }
-        return {chain_.begin(), false};
+        return {begin(), false};
+    }
+
+    template<typename... Args>
+    check_pair emplace_back(Args... args) {
+        matrix_type tmp {std::forward<Args>(args)...};
+        return push_back(tmp);
+    }
+
+    template<typename... Args>
+    check_pair emplace_front(Args... args) {
+        matrix_type tmp {std::forward<Args>(args)...};
+        return push_front(tmp);
     }
 
     std::vector<size_type> get_optimal_mul_order() const {
@@ -120,7 +132,6 @@ public:
                 for (auto k = i; k <= j - 1; ++k) {
                     auto q = cost_table[i][k] + cost_table[k + 1][j] +
                              matrix_sizes_[i-1] * matrix_sizes_[k] * matrix_sizes_[j];
-                    std::cout << "q = " << q << std::endl;
                     if (q < cost_table[i][j]) {
                         cost_table[i][j]    = q;
                         optimal_costs[i][j] = k;
@@ -128,7 +139,7 @@ public:
                 }
             }
         }
-        std::cout << "deque\n";
+        std::cout << "matrix_sizes\n";
         for (auto val : matrix_sizes_) {
             std::cout << val << ' ';
         }
@@ -140,7 +151,7 @@ public:
         std::vector<size_type> vec {};
         std::unordered_multimap<size_type, size_type> mmap {};
         optimal_order(mmap, vec, optimal_costs, 1, size());
-        std::cout << "\nVECTOR\n";
+        std::cout << "\nData\n";
         for (auto val : vec) {
             std::cout << val << std::endl;
         }
@@ -152,7 +163,7 @@ public:
            // std::cout << i << std::endl;
             std::cout << "A" << i;
         } else {
-            std::cout << "(";
+            std::cout << " ( ";
             optimal_order(mmap, data, m, i, m[i][j]);
             //vec.push_back(i - 1);
             optimal_order(mmap, data, m, m[i][j] + 1, j);
@@ -172,16 +183,13 @@ public:
                 auto max_lower = std::max_element(lower_range.first, lower_range.second);
 
                 if (max_lower == lower_range.second) {
-                    //data.push_back(min_upper->second - 1);
                     data.push_back(i - 1);
                 } else {
-                    //std::cout << "MAX_LOWER = " << max_lower->second << std::endl;
                     data.push_back(max_lower->second - 1);
                 }
             }
             mmap.emplace(i, j);
-            mmap.emplace(j, i);
-            std::cout << ")";
+            std::cout << " ) ";
         }
     }
 
