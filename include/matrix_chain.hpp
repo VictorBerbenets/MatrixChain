@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iterator>
 #include <utility>
+#include <vector>
 #include <list>
 
 #include "matrix.hpp"
@@ -144,12 +145,12 @@ public:
             }
         }
 
-        std::vector<size_type> vec {};
-        vec.reserve(size());
+        std::vector<size_type> data {};
+        data.reserve(size());
         optimal_mmap mmap {};
-        optimal_order(mmap, vec, optimal_costs, 1, size());
+        optimal_order(mmap, data, optimal_costs, 1, size());
 
-        return vec;
+        return data;
     }
 
     void optimal_order(optimal_mmap& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
