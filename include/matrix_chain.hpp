@@ -2,11 +2,12 @@
 #define MATRIX_CHAIN
 
 #include <deque>
+#include <map>
 #include <unordered_map>
 #include <algorithm>
 #include <iterator>
 #include <utility>
-#include <stack>
+#include <list>
 
 #include "matrix.hpp"
 
@@ -27,7 +28,10 @@ public:
     using const_reverse_iterator = typename std::deque<matrix_type>::const_reverse_iterator;
     using size_type              = typename std::deque<matrix_type>::size_type;
 private:
-    using check_pair = std::pair<const_iterator, bool>;
+    using check_pair   = std::pair<const_iterator, bool>;
+    using optimal_mmap = std::unordered_multimap<size_type, size_type>;
+    using mul_map      = std::map<size_type, matrix_type>;
+    using mul_iterator = mul_map::iterator;
 
     enum class InsertPos : char { Front = 1, Back = 2};
 public:
@@ -139,67 +143,64 @@ public:
                 }
             }
         }
-#if 0
-        std::cout << "matrix_sizes\n";
-        for (auto val : matrix_sizes_) {
-            std::cout << val << ' ';
-        }
-        std::cout << std::endl;
-#endif
-        //std::cout << cost_table << std::endl;
-        //std::cout << optimal_costs << std::endl;
 
         std::vector<size_type> vec {};
-        std::unordered_multimap<size_type, size_type> mmap {};
+        vec.reserve(size());
+        optimal_mmap mmap {};
         optimal_order(mmap, vec, optimal_costs, 1, size());
-        std::cout << std::endl;
-        std::cout << "\nData\n";
-        for (auto val : vec) {
-            std::cout << val << std::endl;
-        }
+
         return vec;
     }
 
+    void optimal_order(optimal_mmap& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
+        if (i == j) {
+            return ;
+        }
+
+        optimal_order(mmap, data, m, i, m[i][j]);
+        optimal_order(mmap, data, m, m[i][j] + 1, j);
+
+        if (j - i == 1) {
+            data.push_back(i - 1);
+        } else {
+            auto lower_range = mmap.equal_range(i);
+            auto max_lower   = std::max_element(lower_range.first, lower_range.second);
+
+            if (max_lower == lower_range.second) {
+                data.push_back(i - 1);
+            } else {
+                data.push_back(max_lower->second - 1);
+            }
+        }
+        mmap.emplace(i, j); 
+    }
+
     matrix_type effective_multiply() const {
+        if (empty())     { return {0, 0, 0}; }
+        if (size() == 1) { return front();   }
+
         auto order = get_optimal_mul_order();
-        //auto& chain = *this;
-#if 0
-        std::cout << __LINE__ << std::endl;
-        std::cout << "size = " << order.size() << std::endl;
-        std::cout << "FRONT = " << order.front() << std::endl;
-#endif
-        std::unordered_map<size_type, matrix_type> m {};
-        //auto tmp = chain_[order.front()] * chain_[order.front() + 1];
-        //m.emplace(order.front(), tmp);
-        for (auto iter = order.begin(), end = order.end(); iter != end; ++iter) {
-            std::cout << "ITER = " << *iter << std::endl;
-            auto next_matrix_it = m.find(*iter + 1);
-            auto prev_matrix_it = m.find(*iter - 1);
+        std::list<size_type> ost(order.begin(), order.end());
+        ost.push_back(order.size());
 
-            auto next_matrix = next_matrix_it == m.end() ? chain_[*iter + 1] : next_matrix_it->second;
+        mul_map m {};
+        for (auto val : order) {
+            auto next_matrix_it = m.upper_bound(val);
 
-            auto prev_matrix = prev_matrix_it == m.end() ? chain_[*iter] : prev_matrix_it->second;
-
-            if (*iter == 0) {
-                std::cout << "IN IF:\n";
-                prev_matrix_it = m.find(*iter);
-                prev_matrix = prev_matrix_it == m.end() ? chain_[*iter] : prev_matrix_it->second;
+            auto prev_matrix_it = m.end();
+            for (auto it = m.begin(); it->first < val && it != m.end(); ++it) {
+                prev_matrix_it = it;
             }
 
-            m.emplace(*iter, prev_matrix * next_matrix);
+            auto next_matrix = neighbour_matrix(ost, m, next_matrix_it, val + 1);
+            auto prev_matrix = neighbour_matrix(ost, m, prev_matrix_it, val);
 
+            ost.remove(val);
+            ost.remove(val + 1);
+
+            m.emplace(val, prev_matrix * next_matrix);
         }
         return m.find(order.back())->second;
-    #if 0
-        auto tmp = chain[order.front()] * chain[order.front() + 1];
-        m[order.front()]
-        for (auto id : order) {
-            if (m.find(id) == m.cend()) {
-
-            }
-            m[id] = chain[id] * chain[id + 1];
-        }
-    #endif
     }
 
     matrix_type multiply() const {
@@ -214,41 +215,6 @@ public:
         return tmp;
     }
 
-    void optimal_order(std::unordered_multimap<size_type, size_type>& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
-        if (i == j) {
-           // std::cout << i << std::endl;
-            std::cout << "A" << i;
-        } else {
-            std::cout << " ( ";
-            optimal_order(mmap, data, m, i, m[i][j]);
-            //vec.push_back(i - 1);
-            optimal_order(mmap, data, m, m[i][j] + 1, j);
-            //std::cout << i - 1;
-            //std::cout << "i = " << i << std::endl;
-            //std::cout << "j = " << j << std::endl;
-
-            if (j - i == 1) {
-                data.push_back(i - 1);
-            } else {
-                auto lower_range = mmap.equal_range(i);
-                //std::cout << "lower range\n";
-                for (auto it = lower_range.first; it != lower_range.second; ++it) {
-                    //std::cout << "first  = " << it->first << std::endl;
-                    //std::cout << "second = " << it->second << std::endl;
-                }
-                auto max_lower = std::max_element(lower_range.first, lower_range.second);
-
-                if (max_lower == lower_range.second) {
-                    data.push_back(i - 1);
-                } else {
-                    data.push_back(max_lower->second - 1);
-                }
-            }
-            mmap.emplace(i, j);
-            std::cout << " ) ";
-        }
-    }
-
     size_type size() const noexcept { return chain_.size(); }
     bool empty() const noexcept { return chain_.empty(); }
 
@@ -260,7 +226,17 @@ public:
     reverse_iterator rend()   noexcept { return chain_.rend(); }
     const_reverse_iterator crbegin() const noexcept { return chain_.crbegin(); }
     const_reverse_iterator crend()   const noexcept { return chain_.crend(); }
-private:
+private: 
+    matrix_type neighbour_matrix(std::list<size_type>& ost, mul_map& m, mul_iterator iter, size_type id) const {
+        if (std::find(ost.begin(), ost.end(), id) != ost.end()) {
+            return chain_[id];
+        }
+        auto tmp = iter->second;
+        m.erase(iter);
+
+        return tmp;
+    }
+
     bool insertion_check(const matrix_type& matrix, InsertPos pos) const {
         if (empty()) { return true; }
 
