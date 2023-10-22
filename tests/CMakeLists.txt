@@ -21,7 +21,7 @@ target_link_libraries( unit2
 
 target_include_directories( end2end2
                             PRIVATE end2end/include
-                            PRIVATE ${INCLUDE_DIR}
+                            PRIVATE ${MATRIX_DIR}
                           )
 
 target_include_directories( performance

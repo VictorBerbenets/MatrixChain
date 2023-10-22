@@ -27,7 +27,7 @@ int main() {
 
     yLAB::MatrixChain<def_type> chain {};
     auto data = get_data(std::cin);
-    
+
     if (data.empty()) { return 0; }
     for (auto iter = data.begin(), end = std::prev(data.end()); iter != end; ++iter) {
         chain.emplace_back(*iter, *(iter + 1), def_type {});

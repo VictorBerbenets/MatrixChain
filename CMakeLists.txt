@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 project(matrix_chain)
 
-set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/Matrix/include)
+set(MATRIX_DIR ${PROJECT_SOURCE_DIR}/Matrix/include)
+set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include ${MATRIX_DIR})
 
 aux_source_directory(./src/ SRC_DIR)
 

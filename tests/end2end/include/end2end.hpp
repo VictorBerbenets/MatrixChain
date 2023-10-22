@@ -6,6 +6,8 @@
 #include <ctime>
 #include <filesystem>
 
+#include "matrix.hpp"
+
 namespace testing {
 
 namespace dirs {
@@ -20,21 +22,29 @@ class generator {
     using distribution_type = std::uniform_int_distribution<size_type>;
     using value_type        = size_type;
 
-    void create_source_directory();
-    value_type random_value(value_type min_val, value_type max_val);
+    static constexpr size_type MIN_MATRICES_NUMBER = 2;
+    static constexpr size_type MAX_MATRICES_NUMBER = 20;
+    static constexpr size_type MIN_MATRIX_SIZE = 1;
+    static constexpr size_type MAX_MATRIX_SIZE = 100;
 
+    void create_source_directory();
+    value_type random_value(value_type min_val = MIN_MATRICES_NUMBER, value_type max_val = MAX_MATRICES_NUMBER);
+    void generate_optimal_orders(size_type number);
+    size_type fill_optimal_order(size_type i, size_type j, yLAB::Matrix<size_type>& lookup_table);
+    void write_data_into_files(size_type test_number);
 public:
-    generator(size_type tests_number, size_type keys_number, size_type queries_number);
+    generator(size_type tests_number);
 
     void generate_tests() {
         create_source_directory();
 
         for (size_type counter = 1; counter <= tests_number_; ++counter) {
-            //generate_optimal_orders(counter);
+            generate_optimal_orders(counter);
         }
     }
 private:
     std::vector<size_type> effective_order_;
+    std::vector<size_type> matrices_sizes_;
     size_type tests_number_;
     generator_type generator_;
 
