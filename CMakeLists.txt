@@ -19,6 +19,11 @@ set_target_properties(
     CXX_STANDARD_REQUIRED ON
 )
 
+find_package(GTest REQUIRED)
+enable_testing()
+
+find_package(Threads REQUIRED)
+
 add_subdirectory(Matrix)
 add_subdirectory(tests)
 

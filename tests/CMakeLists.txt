@@ -2,10 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(tests)
 
-#enable_testing()
-
-#add_subdirectory(../Matrix/tests/googletest .)
-
 aux_source_directory(./unit UNIT)
 aux_source_directory(./end2end/src END2END)
 aux_source_directory(./compare PERFORMANCE_COMPARING)
@@ -15,11 +11,13 @@ add_executable(end2end2 ${END2END})
 add_executable(performance ${PERFORMANCE_COMPARING})
 
 target_include_directories( unit2
-    #                          PRIVATE googletest/
                             PRIVATE ${INCLUDE_DIR}
                           )
 
-#target_link_libraries(unit gtest_main gmock_main)
+target_link_libraries( unit2
+                       PRIVATE ${GTEST_LIBRARIES}
+                       PRIVATE ${CMAKE_THREAD_LIBS_INIT}
+                     )
 
 target_include_directories( end2end2
                             PRIVATE end2end/include
