@@ -1,6 +1,6 @@
 #include <iostream>
-#include <iterator>
 #include <vector>
+#include <chrono>
 #include <stdexcept>
 
 #include "matrix_chain.hpp"
@@ -33,9 +33,16 @@ int main() {
         chain.emplace_back(*iter, *(iter + 1), def_type {});
     }
 
-    for (auto val : chain.get_optimal_mul_order()) {
-        std::cout << val << ' ';
-    }
-    std::cout << std::endl;
-}
+    auto start = std::chrono::high_resolution_clock::now();
+#ifdef EFFECTIVE_MULTIPLY
+    std::cout << "EFFECTIVE\n";
+    auto result_matrix = chain.effective_multiply();
+#else
+    std::cout << "USUAL\n";
+    auto result_matrix = chain.multiply();
+#endif
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> dur = end - start;
+    std::cout << dur.count() << std::endl;
 
+}
