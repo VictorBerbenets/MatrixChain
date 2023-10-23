@@ -23,7 +23,7 @@ class generator {
     using value_type        = size_type;
 
     static constexpr size_type MIN_MATRICES_NUMBER = 2;
-    static constexpr size_type MAX_MATRICES_NUMBER = 20;
+    static constexpr size_type MAX_MATRICES_NUMBER = 200;
     static constexpr size_type MIN_MATRIX_SIZE = 1;
     static constexpr size_type MAX_MATRIX_SIZE = 100;
 

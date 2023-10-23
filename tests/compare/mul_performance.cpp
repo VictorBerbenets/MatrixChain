@@ -27,7 +27,7 @@ int main() {
 
     yLAB::MatrixChain<def_type> chain {};
     auto data = get_data(std::cin);
-    
+
     if (data.empty()) { return 0; }
     for (auto iter = data.begin(), end = std::prev(data.end()); iter != end; ++iter) {
         chain.emplace_back(*iter, *(iter + 1), def_type {});
@@ -35,10 +35,8 @@ int main() {
 
     auto start = std::chrono::high_resolution_clock::now();
 #ifdef EFFECTIVE_MULTIPLY
-    std::cout << "EFFECTIVE\n";
     auto result_matrix = chain.effective_multiply();
 #else
-    std::cout << "USUAL\n";
     auto result_matrix = chain.multiply();
 #endif
     auto end = std::chrono::high_resolution_clock::now();
