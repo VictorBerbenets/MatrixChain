@@ -8,6 +8,8 @@ The main goal is to implement a multifunctional class for working with matrices,
 ```bash
 git clone git@github.com:VictorBerbenets/MatrixChain.git
 cd MatrixChain/
+git submodule init
+git submodule update
 cmake -S ./ -B build/ -DCMAKE_BUILD_TYPE=Release .. [-DEND2END_TESTING=<OFF/ON>] [-DEFFECTIVE_MULTIPLY=<OFF/ON>]
 cd build/
 cmake --build .
