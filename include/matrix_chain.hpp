@@ -182,27 +182,27 @@ public:
         if (size() == 1) { return front();   }
 
         auto order = get_optimal_mul_order().first;
-        std::list<size_type> ost(order.begin(), order.end());
-        ost.push_back(order.size());
+        std::list<size_type> not_used_places(order.begin(), order.end());
+        not_used_places.push_back(order.size());
 
-        mul_map m {};
+        mul_map used_places {};
         for (auto val : order) {
-            auto next_matrix_it = m.upper_bound(val);
+            auto next_matrix_it = used_places.upper_bound(val);
 
-            auto prev_matrix_it = m.end();
-            for (auto it = m.begin(); it->first < val && it != m.end(); ++it) {
+            auto prev_matrix_it = used_places.end();
+            for (auto it = used_places.begin(); it->first < val && it != used_places.end(); ++it) {
                 prev_matrix_it = it;
             }
 
-            auto next_matrix = neighbour_matrix(ost, m, next_matrix_it, val + 1);
-            auto prev_matrix = neighbour_matrix(ost, m, prev_matrix_it, val);
+            auto next_matrix = neighbour_matrix(not_used_places, used_places, next_matrix_it, val + 1);
+            auto prev_matrix = neighbour_matrix(not_used_places, used_places, prev_matrix_it, val);
 
-            ost.remove(val);
-            ost.remove(val + 1);
+            not_used_places.remove(val);
+            not_used_places.remove(val + 1);
 
-            m.emplace(val, prev_matrix * next_matrix);
+            used_places.emplace(val, prev_matrix * next_matrix);
         }
-        return m.find(order.back())->second;
+        return used_places.find(order.back())->second;
     }
 
     matrix_type multiply() const {
@@ -229,12 +229,12 @@ public:
     const_reverse_iterator crbegin() const noexcept { return chain_.crbegin(); }
     const_reverse_iterator crend()   const noexcept { return chain_.crend(); }
 private:
-    matrix_type neighbour_matrix(std::list<size_type>& ost, mul_map& m, mul_iterator iter, size_type id) const {
-        if (std::find(ost.begin(), ost.end(), id) != ost.end()) {
+    matrix_type neighbour_matrix(std::list<size_type>& not_used_places, mul_map& used_places, mul_iterator neighbour_it, size_type id) const {
+        if (std::find(not_used_places.begin(), not_used_places.end(), id) != not_used_places.end()) {
             return chain_[id];
         }
-        auto tmp = iter->second;
-        m.erase(iter);
+        auto tmp = neighbour_it->second;
+        used_places.erase(neighbour_it);
 
         return tmp;
     }
