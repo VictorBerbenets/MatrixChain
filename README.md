@@ -25,7 +25,7 @@ The program will be waiting for input data in stdin in such way:
 ## How to run tests:
 ### You can run unit tests:
 ```bash
-./tests/unit
+./tests/unit_chain
 ```
 ### Or you can run end2end tests:
 *Make sure* you have compiled with:  
