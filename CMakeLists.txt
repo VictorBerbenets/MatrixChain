@@ -20,6 +20,15 @@ set_target_properties(
     CXX_STANDARD_REQUIRED ON
 )
 
+option(END2END_TESTING "build for testing" OFF)
+
+if (END2END_TESTING)
+    target_compile_definitions( ${PROJECT_NAME}
+                                PRIVATE
+                                END2END_TESTING
+                              )
+endif()
+
 find_package(GTest REQUIRED)
 enable_testing()
 

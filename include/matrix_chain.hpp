@@ -31,6 +31,7 @@ public:
 private:
     using check_pair   = std::pair<const_iterator, bool>;
     using optimal_mmap = std::unordered_multimap<size_type, size_type>;
+    using optimal_pair = std::pair<std::vector<size_type>, size_type>;
     using mul_map      = std::map<size_type, matrix_type>;
     using mul_iterator = mul_map::iterator;
 
@@ -112,17 +113,17 @@ public:
 
     template<typename... Args>
     check_pair emplace_back(Args... args) {
-        matrix_type tmp {std::forward<Args>(args)...};
+        matrix_type tmp {args...};
         return push_back(tmp);
     }
 
     template<typename... Args>
     check_pair emplace_front(Args... args) {
-        matrix_type tmp {std::forward<Args>(args)...};
+        matrix_type tmp {args...};
         return push_front(tmp);
     }
 
-    std::vector<size_type> get_optimal_mul_order() const {
+    optimal_pair get_optimal_mul_order() const {
         if (empty()) {
             return {};
         }
@@ -150,7 +151,7 @@ public:
         optimal_mmap mmap {};
         optimal_order(mmap, data, optimal_costs, 1, size());
 
-        return data;
+        return {data, cost_table[1][size()]};
     }
 
     void optimal_order(optimal_mmap& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
@@ -173,14 +174,14 @@ public:
                 data.push_back(max_lower->second - 1);
             }
         }
-        mmap.emplace(i, j); 
+        mmap.emplace(i, j);
     }
 
     matrix_type effective_multiply() const {
         if (empty())     { return {0, 0, 0}; }
         if (size() == 1) { return front();   }
 
-        auto order = get_optimal_mul_order();
+        auto order = get_optimal_mul_order().first;
         std::list<size_type> ost(order.begin(), order.end());
         ost.push_back(order.size());
 
@@ -227,7 +228,7 @@ public:
     reverse_iterator rend()   noexcept { return chain_.rend(); }
     const_reverse_iterator crbegin() const noexcept { return chain_.crbegin(); }
     const_reverse_iterator crend()   const noexcept { return chain_.crend(); }
-private: 
+private:
     matrix_type neighbour_matrix(std::list<size_type>& ost, mul_map& m, mul_iterator iter, size_type id) const {
         if (std::find(ost.begin(), ost.end(), id) != ost.end()) {
             return chain_[id];

@@ -28,15 +28,6 @@ target_include_directories( performance
                             PRIVATE ${INCLUDE_DIR}
                           )
 
-option(EFFECTIVE_MULTIPLY "for choosing effective matrix chain multiply algorithm" OFF)
-
-if (EFFECTIVE_MULTIPLY)
-    target_compile_definitions( performance
-                                PRIVATE
-                                EFFECTIVE_MULTIPLY
-                              )
-endif()
-
 set_target_properties(
     unit2 end2end2 performance PROPERTIES
     CXX_STANDARD 20

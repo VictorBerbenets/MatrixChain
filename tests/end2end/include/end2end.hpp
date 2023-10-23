@@ -31,7 +31,7 @@ class generator {
     value_type random_value(value_type min_val = MIN_MATRICES_NUMBER, value_type max_val = MAX_MATRICES_NUMBER);
     void generate_optimal_orders(size_type number);
     size_type fill_optimal_order(size_type i, size_type j, yLAB::Matrix<size_type>& lookup_table);
-    void write_data_into_files(size_type test_number);
+    void write_data_into_files(size_type test_number, size_type matrices_number, size_type ans);
 public:
     generator(size_type tests_number);
 
@@ -43,7 +43,6 @@ public:
         }
     }
 private:
-    std::vector<size_type> effective_order_;
     std::vector<size_type> matrices_sizes_;
     size_type tests_number_;
     generator_type generator_;

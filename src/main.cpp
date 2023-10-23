@@ -32,10 +32,17 @@ int main() {
     for (auto iter = data.begin(), end = std::prev(data.end()); iter != end; ++iter) {
         chain.emplace_back(*iter, *(iter + 1), def_type {});
     }
+    auto optimal_pair = chain.get_optimal_mul_order();
 
-    for (auto val : chain.get_optimal_mul_order()) {
+#ifndef END2END_TESTING
+    for (auto val : optimal_pair.first) {
         std::cout << val << ' ';
     }
     std::cout << std::endl;
+#else
+    if (chain.effective_multiply() == chain.multiply()) {
+        std::cout << optimal_pair.second << std::endl;
+    }
+#endif
 }
 
