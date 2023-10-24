@@ -91,4 +91,13 @@ generator::generator(size_type tests_number)
     generator_.seed( static_cast<size_type>(std::time(nullptr)) );
 }
 
+void generator::generate_tests() {
+    create_source_directory();
+
+    for (size_type counter = 1; counter <= tests_number_; ++counter) {
+        generate_optimal_orders(counter);
+    }
+}
+
 } // <--- namespace testing
+

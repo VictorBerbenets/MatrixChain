@@ -11,9 +11,9 @@
 namespace testing {
 
 namespace dirs {
-    const std::string resource_dir = "../tests/end2end/resources";
-    const std::string tests_dir    = "../tests/end2end/resources/tests/";
-    const std::string ans_dir      = "../tests/end2end/resources/answers/";
+    const std::string resource_dir = "../tests/end2end/resources/";
+    const std::string tests_dir    = resource_dir + "tests/";
+    const std::string ans_dir      = resource_dir + "answers/";
 }
 
 class generator {
@@ -35,13 +35,7 @@ class generator {
 public:
     generator(size_type tests_number);
 
-    void generate_tests() {
-        create_source_directory();
-
-        for (size_type counter = 1; counter <= tests_number_; ++counter) {
-            generate_optimal_orders(counter);
-        }
-    }
+    void generate_tests();
 private:
     std::vector<size_type> matrices_sizes_;
     size_type tests_number_;
