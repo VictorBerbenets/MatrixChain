@@ -36,7 +36,7 @@ output:
 ./tests/unit_chain
 ```
 ### Or you can run end2end tests:
-***Make sure you have compiled with `-DEND2END_TESTING=ON` ***  
+***Make sure you have compiled with `-DEND2END_TESTING=ON`***  
 In that case do:  
 ```bash
 bash ../tests/end2end/test_runner.sh <tests_number>
