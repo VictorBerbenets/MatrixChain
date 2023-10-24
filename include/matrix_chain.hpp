@@ -56,7 +56,6 @@ public:
                 matrix_sizes_.push_back(chain_[index].ncolumn());
             }
         }
-
     }
 
     MatrixChain(std::initializer_list<matrix_type> ls)
@@ -114,13 +113,13 @@ public:
     template<typename... Args>
     check_pair emplace_back(Args... args) {
         matrix_type tmp {args...};
-        return push_back(tmp);
+        return push_back(std::move(tmp));
     }
 
     template<typename... Args>
     check_pair emplace_front(Args... args) {
         matrix_type tmp {args...};
-        return push_front(tmp);
+        return push_front(std::move(tmp));
     }
 
     optimal_pair get_optimal_mul_order() const {
