@@ -20,8 +20,16 @@ cmake --build .
 ```
 The program will be waiting for input data in stdin in such way:  
 ```bash
-<matrices sizes> <size1> <size2> ...
+<matrices sizes> <size1> <size2> ...  
 ```
+At the end, the program prints optimal multiplication order for the chain of
+matrices. Example:  
+input:  
+5  
+30 35 15 5 10  
+output:  
+1 0 2
+***Make sure you have compiled with `-DEND2END_TESTING=OFF`.***  
 ## How to run tests:
 ### You can run unit tests:
 ```bash
