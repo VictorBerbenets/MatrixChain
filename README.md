@@ -28,7 +28,7 @@ input:
 5  
 30 35 15 5 10  
 output:  
-1 0 2
+1 0 2  
 ***Make sure you have compiled with `-DEND2END_TESTING=OFF`.***  
 ## How to run tests:
 ### You can run unit tests:
@@ -36,10 +36,7 @@ output:
 ./tests/unit_chain
 ```
 ### Or you can run end2end tests:
-*Make sure* you have compiled with:  
-```bash
-cmake -S ./ -B build/ -DCMAKE_BUILD_TYPE=Release .. -DEND2END_TESTING=ON
-```
+***Make sure you have compiled with `-DEND2END_TESTING=ON` ***  
 In that case do:  
 ```bash
 bash ../tests/end2end/test_runner.sh <tests_number>
