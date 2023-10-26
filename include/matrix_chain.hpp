@@ -35,7 +35,7 @@ private:
     using mul_map      = std::map<size_type, matrix_type>;
     using mul_iterator = mul_map::iterator;
 
-    enum class InsertPos : char { Front = 1, Back = 2};
+    enum class InsertPos : char {Front, Back};
 public:
     constexpr MatrixChain() = default;
 
