@@ -75,8 +75,8 @@ public:
     const_reference back()  const { return chain_.back(); }
 
     check_pair push_back(const matrix_type& matrix) {
-        if (insertion_check(matrix, InsertPos::Back)) {
-            push_size(matrix, InsertPos::Back);
+        if (insertion_check(matrix.nline(), InsertPos::Back)) {
+            push_size(matrix.nline(), matrix.ncolumn(), InsertPos::Back);
             chain_.push_back(matrix);
             return {std::prev(end()), true};
         }
@@ -84,8 +84,8 @@ public:
     }
 
     check_pair push_back(matrix_type&& matrix) {
-        if (insertion_check(matrix, InsertPos::Back)) {
-            push_size(matrix, InsertPos::Back);
+        if (insertion_check(matrix.nline(), InsertPos::Back)) {
+            push_size(matrix.nline(), matrix.ncolumn(), InsertPos::Back);
             chain_.push_back(std::move(matrix));
             return {std::prev(end()), true};
         }
@@ -93,8 +93,8 @@ public:
     }
 
     check_pair push_front(const matrix_type& matrix) {
-        if (insertion_check(matrix, InsertPos::Front)) {
-            push_size(matrix, InsertPos::Front);
+        if (insertion_check(matrix.ncolumn(), InsertPos::Front)) {
+            push_size(matrix.nline(), matrix.ncolumn(), InsertPos::Front);
             chain_.push_front(matrix);
             return {begin(), true};
         }
@@ -102,8 +102,8 @@ public:
     }
 
     check_pair push_front(matrix_type&& matrix) {
-        if (insertion_check(matrix, InsertPos::Front)) {
-            push_size(matrix, InsertPos::Front);
+        if (insertion_check(matrix.ncolumn(), InsertPos::Front)) {
+            push_size(matrix.nline(), matrix.ncolumn(), InsertPos::Front);
             chain_.push_front(std::move(matrix));
             return {begin(), true};
         }
@@ -111,15 +111,23 @@ public:
     }
 
     template<typename... Args>
-    check_pair emplace_back(Args... args) {
-        matrix_type tmp {args...};
-        return push_back(std::move(tmp));
+    check_pair emplace_back(size_type n_line, size_type n_column, Args... args) {
+        if (insertion_check(n_line, InsertPos::Back)) {
+            push_size(n_line, n_column, InsertPos::Back);
+            chain_.emplace_back(n_line, n_column, args...);
+            return {std::prev(end()), true};
+        }
+        return {std::prev(end()), false};
     }
 
     template<typename... Args>
-    check_pair emplace_front(Args... args) {
-        matrix_type tmp {args...};
-        return push_front(std::move(tmp));
+    check_pair emplace_front(size_type n_line, size_type n_column, Args... args) {
+        if (insertion_check(n_column, InsertPos::Front)) {
+            push_size(n_line, n_column, InsertPos::Front);
+            chain_.emplace_front(n_line, n_column, args...);
+            return {begin(), true};
+        }
+        return {begin(), false};
     }
 
     optimal_pair get_optimal_mul_order() const {
@@ -238,27 +246,26 @@ private:
         return tmp;
     }
 
-    bool insertion_check(const matrix_type& matrix, InsertPos pos) const {
+    bool insertion_check(size_type dimension, InsertPos pos) const {
         if (empty()) { return true; }
 
         switch(pos) {
             case InsertPos::Front:
-                return chain_.front().nline() == matrix.ncolumn();
+                return chain_.front().nline() == dimension;
             case InsertPos::Back:
-                return chain_.back().ncolumn() == matrix.nline();
+                return chain_.back().ncolumn() == dimension;
             default: return false;
         }
     }
-
-    void push_size(const matrix_type& matrix, InsertPos pos) {
+    void push_size(size_type n_line, size_type n_column, InsertPos pos) {
         if (empty()) {
-            matrix_sizes_.push_back(matrix.nline());
-            matrix_sizes_.push_back(matrix.ncolumn());
+            matrix_sizes_.push_back(n_line);
+            matrix_sizes_.push_back(n_column);
         } else {
             if (pos == InsertPos::Front) {
-                matrix_sizes_.push_front(matrix.nline());
+                matrix_sizes_.push_front(n_line);
             } else {
-                matrix_sizes_.push_back(matrix.ncolumn());
+                matrix_sizes_.push_back(n_column);
             }
         }
     }
