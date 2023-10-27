@@ -2,6 +2,16 @@
 ## About
 This is the second level of the [matrix task](https://github.com/VictorBerbenets/Matrix).
 The main goal is to implement a multifunctional class for working with matrices, namely, to implement effective multiplication of a chain of matrices.
+***Interface and main algorithm***  
+In this program, the main role is played by the dynamic programming algorithm,  
+which can be found in Cormen: https://e-maxx.ru/bookz/files/cormen.pdf .  
+In short, a main method `get_optimal_mul_order()` consists of 4 steps:  
+1. Find the optimal arrangement of brackets for multiplying a chain of matrices. The solution to this problem is made up of optimal solutions to subtasks (we divide the chain into sub-chains and look for the best ways to multiply them).
+2. Recursively determine the cost of the optimal solution in terms
+of optimal solutions to subtasks.
+3. We calculate the minimum cost of the product of a chain of matrices using a tabular ascending approach (in one table we store the costs of calculating the sub-chains, and in the other the indices at which optimal costs are achieved).
+4. Using the `optimal_order()` method and a table with optimal values, we recursively restore the optimal multiplication order of the matrix chain.
+
 ## Requirements
 **cmake** version must be 3.15 or higher
 ## How to build
