@@ -10,7 +10,7 @@ In short, a main method `get_optimal_mul_order()` consists of 4 steps:
 of optimal solutions to subtasks.
 3. We calculate the minimum cost of the product of a chain of matrices using a tabular ascending approach (in one table we store the costs of calculating the sub-chains, and in the other the indices at which optimal costs are achieved).
 4. Using the `optimal_order()` method and a table with optimal values, we recursively restore the optimal multiplication order of the matrix chain.
-***Class interface***
+***Class interface***  
 The MatrixChain class contains 2 fields of type `std::deque<Matrix<numeric_type>>` and `std::deque<std::size_t>`. The first stores the matrices themselves, and the second stores their sizes in the appropriate order. Note that the `std::deque` container is the best suited for this task: we have insertion, deletion at the end and beginning for 0(1) and indexing for O(1).  
 It is also possible to efficiently and directly multiply a chain of matrices. The efficient method uses the optimal multiplication order returned by the `get_optimal_order()` function, then in the loop, as multiplication progresses, `std::map<std::size_t, matrix_type>` is filled in. As a result, the product of the most recently multiplied pair of matrices is returned.
 ## Requirements
