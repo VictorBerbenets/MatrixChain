@@ -15,8 +15,7 @@ std::vector<std::size_t> get_data(std::istream& is) {
     std::vector<std::size_t> data{};
     data.reserve(ms_number);
 
-    std::size_t count {0};
-    for (; count < ms_number; ++count) {
+    for (std::size_t count {0}; count < ms_number; ++count) {
         std::size_t tmp {0};
         is >> tmp;
         if (is.fail()) {

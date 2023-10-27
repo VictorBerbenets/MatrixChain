@@ -138,6 +138,7 @@ public:
         }
         chain_.pop_back();
     }
+
     void pop_front() {    // if container is empty --> got UB
         if (size() == 1) {
             matrix_sizes_.clear();
@@ -181,29 +182,6 @@ public:
         optimal_order(mmap, data, optimal_costs, 1, size());
 
         return {data, cost_table[1][size()]};
-    }
-
-    void optimal_order(optimal_mmap& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
-        if (i == j) {
-            return ;
-        }
-
-        optimal_order(mmap, data, m, i, m[i][j]);
-        optimal_order(mmap, data, m, m[i][j] + 1, j);
-
-        if (j - i == 1) {
-            data.push_back(i - 1);
-        } else {
-            auto lower_range = mmap.equal_range(i);
-            auto max_lower   = std::max_element(lower_range.first, lower_range.second);
-
-            if (max_lower == lower_range.second) {
-                data.push_back(i - 1);
-            } else {
-                data.push_back(max_lower->second - 1);
-            }
-        }
-        mmap.emplace(i, j);
     }
 
     matrix_type effective_multiply() const {
@@ -258,6 +236,29 @@ public:
     const_reverse_iterator crbegin() const noexcept { return chain_.crbegin(); }
     const_reverse_iterator crend()   const noexcept { return chain_.crend(); }
 private:
+    void optimal_order(optimal_mmap& mmap, std::vector<size_type>& data, Matrix<size_type>& m, size_type i, size_type j) const {
+        if (i == j) {
+            return ;
+        }
+
+        optimal_order(mmap, data, m, i, m[i][j]);
+        optimal_order(mmap, data, m, m[i][j] + 1, j);
+
+        if (j - i == 1) {
+            data.push_back(i - 1);
+        } else {
+            auto lower_range = mmap.equal_range(i);
+            auto max_lower   = std::max_element(lower_range.first, lower_range.second);
+
+            if (max_lower == lower_range.second) {
+                data.push_back(i - 1);
+            } else {
+                data.push_back(max_lower->second - 1);
+            }
+        }
+        mmap.emplace(i, j);
+    }
+
     matrix_type neighbour_matrix(std::list<size_type>& not_used_places, mul_map& used_places, mul_iterator neighbour_it, size_type id) const {
         if (std::find(not_used_places.begin(), not_used_places.end(), id) != not_used_places.end()) {
             return chain_[id];
@@ -301,4 +302,3 @@ private:
 } // <--- namespace yLAB
 
 #endif
-
