@@ -130,6 +130,28 @@ public:
         return {begin(), false};
     }
 
+    void pop_back()  {     // if container is empty --> got UB
+        if (size() == 1) {
+            matrix_sizes_.clear();
+        } else {
+            matrix_sizes_.pop_back();
+        }
+        chain_.pop_back();
+    }
+    void pop_front() {    // if container is empty --> got UB
+        if (size() == 1) {
+            matrix_sizes_.clear();
+        } else {
+            matrix_sizes_.pop_front();
+        }
+        chain_.pop_front();
+    }
+
+    void clear() noexcept {
+        matrix_sizes_.clear();
+        chain_.clear();
+    }
+
     optimal_pair get_optimal_mul_order() const {
         if (empty()) {
             return {};
@@ -257,6 +279,7 @@ private:
             default: return false;
         }
     }
+
     void push_size(size_type n_line, size_type n_column, InsertPos pos) {
         if (empty()) {
             matrix_sizes_.push_back(n_line);
