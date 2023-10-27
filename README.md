@@ -1,10 +1,10 @@
 # Matrix chain
 ## About
 This is the second level of the [matrix task](https://github.com/VictorBerbenets/Matrix).
-The main goal is to implement a multifunctional class for working with matrices, namely, to implement effective multiplication of a chain of matrices.
+The main goal is to implement a multifunctional class for working with matrices, namely, to implement effective multiplication of a chain of matrices.  
 ***Interface and main algorithm***  
 In this program, the main role is played by the dynamic programming algorithm,  
-which can be found in Cormen: https://e-maxx.ru/bookz/files/cormen.pdf .  
+which can be found in [Cormen](https://e-maxx.ru/bookz/files/cormen.pdf) .  
 In short, a main method `get_optimal_mul_order()` consists of 4 steps:  
 1. Find the optimal arrangement of brackets for multiplying a chain of matrices. The solution to this problem is made up of optimal solutions to subtasks (we divide the chain into sub-chains and look for the best ways to multiply them).
 2. Recursively determine the cost of the optimal solution in terms
