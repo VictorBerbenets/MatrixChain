@@ -6,13 +6,9 @@ set(MATRIX_DIR ${PROJECT_SOURCE_DIR}/Matrix/include)
 set(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include ${MATRIX_DIR})
 
 aux_source_directory(./src/ SRC_DIR)
-
 add_executable(${PROJECT_NAME} ${SRC_DIR})
 
-target_include_directories( ${PROJECT_NAME}
-                            PRIVATE
-                            ${INCLUDE_DIR}
-                            )
+target_include_directories( ${PROJECT_NAME} PRIVATE ${INCLUDE_DIR} )
 
 set_target_properties(
     ${PROJECT_NAME} PROPERTIES
@@ -21,7 +17,6 @@ set_target_properties(
 )
 
 option(END2END_TESTING "build for testing" OFF)
-
 if (END2END_TESTING)
     target_compile_definitions( ${PROJECT_NAME}
                                 PRIVATE
@@ -36,4 +31,3 @@ find_package(Threads REQUIRED)
 
 add_subdirectory(Matrix)
 add_subdirectory(tests)
-
