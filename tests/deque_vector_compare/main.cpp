@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <string>
 #include <chrono>
 
 #include "matrix_chain.hpp"
