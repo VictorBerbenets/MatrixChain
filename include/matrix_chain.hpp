@@ -33,7 +33,7 @@ private:
     using optimal_mmap = std::unordered_multimap<size_type, size_type>;
     using optimal_pair = std::pair<std::vector<size_type>, size_type>;
     using mul_map      = std::map<size_type, matrix_type>;
-    using mul_iterator = mul_map::iterator;
+    using mul_iterator = typename mul_map::iterator;
 
     enum class InsertPos : char {Front, Back};
 public:
