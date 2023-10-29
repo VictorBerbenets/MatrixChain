@@ -111,20 +111,20 @@ public:
     }
 
     template<typename... Args>
-    check_pair emplace_back(size_type n_line, size_type n_column, Args... args) {
+    check_pair emplace_back(size_type n_line, size_type n_column, Args&&... args) {
         if (insertion_check(n_line, InsertPos::Back)) {
             push_size(n_line, n_column, InsertPos::Back);
-            chain_.emplace_back(n_line, n_column, args...);
+            chain_.emplace_back(n_line, n_column, std::forward<Args>(args)...);
             return {std::prev(end()), true};
         }
         return {std::prev(end()), false};
     }
 
     template<typename... Args>
-    check_pair emplace_front(size_type n_line, size_type n_column, Args... args) {
+    check_pair emplace_front(size_type n_line, size_type n_column, Args&&... args) {
         if (insertion_check(n_column, InsertPos::Front)) {
             push_size(n_line, n_column, InsertPos::Front);
-            chain_.emplace_front(n_line, n_column, args...);
+            chain_.emplace_front(n_line, n_column, std::forward<Args>(args)...);
             return {begin(), true};
         }
         return {begin(), false};
