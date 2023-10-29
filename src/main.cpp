@@ -8,7 +8,7 @@
 std::vector<std::size_t> get_data(std::istream& is) {
     std::size_t ms_number {0};
     is >> ms_number;
-    if (!is.good()) {
+    if (is.fail()) {
         throw std::runtime_error{"data reading error"};
     }
 
