@@ -18,10 +18,8 @@ It is also possible to efficiently and directly multiply a chain of matrices. Th
 **cmake** version must be 3.15 or higher
 ## How to build
 ```bash
-git clone git@github.com:VictorBerbenets/MatrixChain.git
+git clone --recurse-submodules git@github.com:VictorBerbenets/MatrixChain.git
 cd MatrixChain/
-git submodule init
-git submodule update
 cmake -S ./ -B build/ -DCMAKE_BUILD_TYPE=Release .. [-DEND2END_TESTING=<OFF/ON>] [-DEFFECTIVE_MULTIPLY=<OFF/ON>]
 cd build/
 cmake --build .
