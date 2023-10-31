@@ -23,17 +23,17 @@ public:
     using const_reference        = const matrix_type&;
     using pointer                = matrix_type*;
     using const_pointer          = const matrix_type*;
-    using iterator               = typename std::deque<matrix_type>::iterator;
-    using const_iterator         = typename std::deque<matrix_type>::const_iterator;
-    using reverse_iterator       = typename std::deque<matrix_type>::reverse_iterator;
-    using const_reverse_iterator = typename std::deque<matrix_type>::const_reverse_iterator;
-    using size_type              = typename std::deque<matrix_type>::size_type;
+    using iterator               = std::deque<matrix_type>::iterator;
+    using const_iterator         = std::deque<matrix_type>::const_iterator;
+    using reverse_iterator       = std::deque<matrix_type>::reverse_iterator;
+    using const_reverse_iterator = std::deque<matrix_type>::const_reverse_iterator;
+    using size_type              = std::deque<matrix_type>::size_type;
 private:
     using check_pair   = std::pair<const_iterator, bool>;
     using optimal_mmap = std::unordered_multimap<size_type, size_type>;
     using optimal_pair = std::pair<std::vector<size_type>, size_type>;
     using mul_map      = std::map<size_type, matrix_type>;
-    using mul_iterator = typename mul_map::iterator;
+    using mul_iterator = mul_map::iterator;
 
     enum class InsertPos : char {Front, Back};
 public:
