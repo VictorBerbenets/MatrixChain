@@ -14,11 +14,11 @@
 
 namespace yLAB {
 
-template<numeric_type T>
+template <numeric_type T, template <typename> typename MatrixContainer = Matrix>
 class MatrixChain final {
 public:
     using value_type             = T;
-    using matrix_type            = Matrix<value_type>;
+    using matrix_type            = MatrixContainer<value_type>;
     using reference              = matrix_type&;
     using const_reference        = const matrix_type&;
     using pointer                = matrix_type*;
@@ -44,7 +44,7 @@ public:
         matrix_sizes_.reserve(++size);
     }
 
-    template<std::forward_iterator ForwIter>
+    template <std::forward_iterator ForwIter>
     MatrixChain(ForwIter begin, ForwIter end)
     : MatrixChain(std::distance(begin, end)) {
         chain_.insert(chain_.begin(), begin, end);
@@ -110,7 +110,7 @@ public:
         return {begin(), false};
     }
 
-    template<typename... Args>
+    template <typename... Args>
     check_pair emplace_back(size_type n_line, size_type n_column, Args&&... args) {
         if (insertion_check(n_line, InsertPos::Back)) {
             push_size(n_line, n_column, InsertPos::Back);
@@ -120,7 +120,7 @@ public:
         return {std::prev(end()), false};
     }
 
-    template<typename... Args>
+    template <typename... Args>
     check_pair emplace_front(size_type n_line, size_type n_column, Args&&... args) {
         if (insertion_check(n_column, InsertPos::Front)) {
             push_size(n_line, n_column, InsertPos::Front);
