@@ -14,7 +14,7 @@
 
 namespace yLAB{
 
-template<numeric_type T>
+template<my_concepts::numeric_type T>
 class MatrixChain_V final {
 public:
     using value_type             = T;
