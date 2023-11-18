@@ -1,5 +1,4 @@
-#ifndef MATRIX_CHAIN
-#define MATRIX_CHAIN
+#pragma once
 
 #include <deque>
 #include <map>
@@ -301,4 +300,3 @@ private:
 
 } // <--- namespace yLAB
 
-#endif

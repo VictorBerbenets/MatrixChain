@@ -1,5 +1,4 @@
-#ifndef VECTOR_CHAIN
-#define VECTOR_CHAIN
+#pragma once
 
 #include <vector>
 #include <map>
@@ -253,4 +252,3 @@ private:
 
 } // namespace yLAB;
 
-#endif

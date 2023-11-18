@@ -1,5 +1,4 @@
-#ifndef END2END_TESTING
-#define END2END_TESTING
+#pragma once
 
 #include <vector>
 #include <random>
@@ -45,4 +44,3 @@ private:
 
 } // <--- namespace testing
 
-#endif
